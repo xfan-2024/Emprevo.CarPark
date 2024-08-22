@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Emprevo.CarPark.Model\Emprevo.CarPark.Model.csproj" />
+  </ItemGroup>
+
 </Project>
