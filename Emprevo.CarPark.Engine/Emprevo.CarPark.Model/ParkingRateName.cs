@@ -15,6 +15,5 @@ namespace Emprevo.CarPark.Model
         public const string NightRate = "Night Rate";
         public const string StandardRate = "Standard Rate";
         public const string WeekendRate = "Weekend Rate";
-
     }
 }

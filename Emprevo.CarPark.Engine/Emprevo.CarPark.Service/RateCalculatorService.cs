@@ -19,26 +19,31 @@ namespace Emprevo.CarPark.Service
         /// <returns>Returns a <see cref="ParkingRate"/> Calculated price,type and name.</returns>
         public ParkingRate CalculateRate(DateTime entryTime, DateTime exitTime)
         {
+            //Validate the input
             if (!CarParkHelper.IsEntryBeforeExit(entryTime, exitTime))
             {
                 throw new ArgumentException("Entry time must be before exit time.");
             }
 
+            //check it meets EarlyBird Condition
             if (IsEarlyBird(entryTime, exitTime))
             {
                 return new ParkingRate { Name = ParkingRateName.EarlyBird, Price = 13.00, RateType = ParkingRateType.FlatRate };
             }
 
+            //check it meets NightRate Condition
             if (IsNightRate(entryTime, exitTime))
             {
                 return new ParkingRate { Name = ParkingRateName.NightRate, Price = 6.50, RateType = ParkingRateType.FlatRate };
             }
 
+            //check it meets WeekEnd Condition
             if (IsWeekendRate(entryTime, exitTime))
             {
                 return new ParkingRate { Name = ParkingRateName.WeekendRate, Price = 10.00, RateType = ParkingRateType.FlatRate };
             }
 
+            //StandRate
             return CalculateStandardRate(entryTime, exitTime);
         }
         #endregion
@@ -70,9 +75,9 @@ namespace Emprevo.CarPark.Service
         private bool IsNightRate(DateTime entryTime, DateTime exitTime)
         {
             //Entry date need to be a week day
-            //Entry time need to between 6pm-11:59:59
+            //Entry time need to between 6pm-24
             bool isEntryTimeValid = entryTime.TimeOfDay >= TimeSpan.FromHours(18) &&
-                                entryTime.TimeOfDay <= (TimeSpan.FromHours(23) + TimeSpan.FromMinutes(59) + TimeSpan.FromSeconds(59)) &&
+                                entryTime.TimeOfDay < TimeSpan.FromHours(24) &&
                                 CarParkHelper.IsWeekday(entryTime);
 
             //Exit date need to be less than next date of entry date 6am
@@ -89,11 +94,13 @@ namespace Emprevo.CarPark.Service
         /// <returns>Boolean result</returns>
         private bool IsWeekendRate(DateTime entryTime, DateTime exitTime)
         {
+            //Entry datetime on weekend
+            //Exit datetime on weekend
             bool isEntryOnWeekend = !CarParkHelper.IsWeekday(entryTime);
             bool isExitOnWeekend = !CarParkHelper.IsWeekday(exitTime);
-            bool isWithinAllowedDays = CarParkHelper.GetDaysDifference(exitTime.Date, entryTime.Date) <= 1;//make sure entry and exit on the same week
+            bool isOnTheSameWeek = CarParkHelper.GetDaysDifference(exitTime.Date, entryTime.Date) <= 1;//make sure entry and exit on the same week
 
-            return isEntryOnWeekend && isExitOnWeekend && isWithinAllowedDays;
+            return isEntryOnWeekend && isExitOnWeekend && isOnTheSameWeek;
         }
 
         /// <summary>

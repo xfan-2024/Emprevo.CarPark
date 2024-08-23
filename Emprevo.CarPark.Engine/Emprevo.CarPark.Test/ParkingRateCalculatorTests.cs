@@ -22,8 +22,7 @@ namespace Emprevo.CarPark.Test
         [TestCase("2024-08-22 06:30", "2024-08-23 16:00", ParkingRateName.StandardRate, 40.00, ParkingRateType.HourlyRate)]
         [TestCase("2024-08-24 05:00", "2024-08-25 23:00", ParkingRateName.WeekendRate, 10.00, ParkingRateType.FlatRate)]
         [TestCase("2024-08-24 10:00", "2024-08-24 10:30", ParkingRateName.WeekendRate, 10.00, ParkingRateType.FlatRate)]
-
-        public void TestCalculateRate(string entryTimeStr, string exitTimeStr, string expectedRateName, double expectedPrice, ParkingRateType expectedRateType)
+        public void CalculateRate_ShouldThrowArgumentException(string entryTimeStr, string exitTimeStr, string expectedRateName, double expectedPrice, ParkingRateType expectedRateType)
         {
             //prepare
             var entryTime = DateTime.Parse(entryTimeStr);
@@ -36,6 +35,18 @@ namespace Emprevo.CarPark.Test
             Assert.AreEqual(expectedRateName, rate.Name);
             Assert.AreEqual(expectedPrice, rate.Price);
             Assert.AreEqual(expectedRateType, rate.RateType);
+        }
+
+        [TestCase("2024-08-22 06:00", "2024-08-21 06:30")]
+        public void TestCalculateRate(string entryTimeStr, string exitTimeStr)
+        {
+            //prepare
+            var entryTime = DateTime.Parse(entryTimeStr);
+            var exitTime = DateTime.Parse(exitTimeStr);
+
+            //assert
+            Assert.Throws<ArgumentException>(() =>
+                calculator.CalculateRate(entryTime, exitTime));
         }
     }
 }

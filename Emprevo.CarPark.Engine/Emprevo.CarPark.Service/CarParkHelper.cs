@@ -14,16 +14,6 @@ namespace Emprevo.CarPark.Service
     public static class CarParkHelper
     {
         /// <summary>
-        /// Validates whether the provided string can be parsed into a valid DateTime.
-        /// </summary>
-        /// <param name="dateTimeString">The string representation of the date and time.</param>
-        /// <returns>Returns true if the string can be converted to a valid DateTime, otherwise false.</returns>
-        public static bool IsValidDateTime(string dateTimeString)
-        {
-            return DateTime.TryParse(dateTimeString, out _);
-        }
-
-        /// <summary>
         /// Validates that the entry time is before the exit time.
         /// </summary>
         /// <param name="entryTime">The time the patron entered the car park.</param>
