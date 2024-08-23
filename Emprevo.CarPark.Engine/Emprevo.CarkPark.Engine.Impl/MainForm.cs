@@ -1,16 +1,19 @@
+using Emprevo.CarPark.Impl.Services;
+using Emprevo.CarPark.Interface;
 using Emprevo.CarPark.Model;
 using Emprevo.CarPark.Service;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
 
 namespace Emprevo.CarkPark.Engine.Impl
 {
     public partial class MainForm : Form
     {
         private readonly IRateCalculatorService _rateCalculatorService;
-        public MainForm()
+        public MainForm(IRateCalculatorService rateCalculatorService)
         {
+            _rateCalculatorService = rateCalculatorService;
             InitializeComponent();
-
-            _rateCalculatorService = new RateCalculatorService();
 
             entryDateTimePicker.Format = DateTimePickerFormat.Custom;
             entryDateTimePicker.CustomFormat = "yyyy-MM-dd HH:mm:ss";

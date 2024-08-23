@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Emprevo.CarPark.Service
+namespace Emprevo.CarPark.Interface
 {
     public interface IRateCalculatorService
     {

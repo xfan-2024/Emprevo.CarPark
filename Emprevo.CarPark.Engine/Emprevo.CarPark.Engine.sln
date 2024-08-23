@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emprevo.CarPark.Model", "Em
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emprevo.CarPark.Test", "Emprevo.CarPark.Test\Emprevo.CarPark.Test.csproj", "{CA9732C6-112B-4CF4-BDD1-2251E21B674F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emprevo.CarPark.Service", "Emprevo.CarPark.Service\Emprevo.CarPark.Service.csproj", "{9963A5DF-CD30-400B-9D9D-89B5730A6897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emprevo.CarPark.Impl", "Emprevo.CarPark.Service\Emprevo.CarPark.Impl.csproj", "{9963A5DF-CD30-400B-9D9D-89B5730A6897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emprevo.CarkPark.Engine.Impl", "Emprevo.CarkPark.Engine.Impl\Emprevo.CarkPark.Engine.Impl.csproj", "{B42A6FBD-12D1-4137-A371-9CFA6C1D50E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emprevo.CarkPark.Engine.App", "Emprevo.CarkPark.Engine.Impl\Emprevo.CarkPark.Engine.App.csproj", "{B42A6FBD-12D1-4137-A371-9CFA6C1D50E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emprevo.CarPark.Interface", "Emprevo.CarPark.Interface\Emprevo.CarPark.Interface.csproj", "{DD627CAF-39AF-424E-9001-C9AAEBBF0AC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B42A6FBD-12D1-4137-A371-9CFA6C1D50E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B42A6FBD-12D1-4137-A371-9CFA6C1D50E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B42A6FBD-12D1-4137-A371-9CFA6C1D50E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD627CAF-39AF-424E-9001-C9AAEBBF0AC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD627CAF-39AF-424E-9001-C9AAEBBF0AC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD627CAF-39AF-424E-9001-C9AAEBBF0AC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD627CAF-39AF-424E-9001-C9AAEBBF0AC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

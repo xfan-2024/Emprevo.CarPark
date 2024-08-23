@@ -1,15 +1,20 @@
-﻿using Emprevo.CarPark.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using Emprevo.CarPark.Interface;
+using Emprevo.CarPark.Model;
+using Emprevo.CarPark.Service;
+using Microsoft.Extensions.Options;
 
-namespace Emprevo.CarPark.Service
+namespace Emprevo.CarPark.Impl.Services
 {
     public class RateCalculatorService : IRateCalculatorService
     {
+        private readonly TimeOptions _timeOptions;
+        private readonly PriceOptions _priceOptions;
+        public RateCalculatorService(IOptions<TimeOptions> timeOptions, IOptions<PriceOptions> priceOptions)
+        {
+            _timeOptions = timeOptions.Value;
+            _priceOptions = priceOptions.Value;
+        }
+
         #region public method
         /// <summary>
         /// Calculates parking rate by given info.
@@ -28,19 +33,19 @@ namespace Emprevo.CarPark.Service
             //check it meets EarlyBird Condition
             if (IsEarlyBird(entryTime, exitTime))
             {
-                return new ParkingRate { Name = ParkingRateName.EarlyBird, Price = 13.00, RateType = ParkingRateType.FlatRate };
+                return new ParkingRate { Name = ParkingRateName.EarlyBird, Price = _priceOptions.EarlyBird, RateType = ParkingRateType.FlatRate };
             }
 
             //check it meets NightRate Condition
             if (IsNightRate(entryTime, exitTime))
             {
-                return new ParkingRate { Name = ParkingRateName.NightRate, Price = 6.50, RateType = ParkingRateType.FlatRate };
+                return new ParkingRate { Name = ParkingRateName.NightRate, Price = _priceOptions.NightRate, RateType = ParkingRateType.FlatRate };
             }
 
             //check it meets WeekEnd Condition
             if (IsWeekendRate(entryTime, exitTime))
             {
-                return new ParkingRate { Name = ParkingRateName.WeekendRate, Price = 10.00, RateType = ParkingRateType.FlatRate };
+                return new ParkingRate { Name = ParkingRateName.WeekendRate, Price = _priceOptions.WeekendRate, RateType = ParkingRateType.FlatRate };
             }
 
             //StandRate
@@ -57,10 +62,10 @@ namespace Emprevo.CarPark.Service
         /// <returns>Boolean result</returns>
         private bool IsEarlyBird(DateTime entryTime, DateTime exitTime)
         {
-            return entryTime.TimeOfDay >= TimeSpan.FromHours(6) &&
-                   entryTime.TimeOfDay <= TimeSpan.FromHours(9) &&
-                   exitTime.TimeOfDay >= TimeSpan.FromHours(15.5) &&
-                   exitTime.TimeOfDay <= TimeSpan.FromHours(23.5) && 
+            return entryTime.TimeOfDay >= TimeSpan.FromHours(_timeOptions.EarlyBirdEntryStartTime) &&
+                   entryTime.TimeOfDay <= TimeSpan.FromHours(_timeOptions.EarlyBirdEntryEndTime) &&
+                   exitTime.TimeOfDay >= TimeSpan.FromHours(_timeOptions.EarlyBirdExitStartTime) &&
+                   exitTime.TimeOfDay <= TimeSpan.FromHours(_timeOptions.EarlyBirdExitEndTime) &&
                    CarParkHelper.IsWeekday(entryTime) &&
                    CarParkHelper.IsWeekday(exitTime) &&
                    CarParkHelper.GetDaysDifference(exitTime.Date, entryTime.Date) == 0;//make sure they are on the same day
@@ -76,12 +81,12 @@ namespace Emprevo.CarPark.Service
         {
             //Entry date need to be a week day
             //Entry time need to between 6pm-24
-            bool isEntryTimeValid = entryTime.TimeOfDay >= TimeSpan.FromHours(18) &&
-                                entryTime.TimeOfDay < TimeSpan.FromHours(24) &&
+            bool isEntryTimeValid = entryTime.TimeOfDay >= TimeSpan.FromHours(_timeOptions.NightRateEntryStartTime) &&
+                                entryTime.TimeOfDay < TimeSpan.FromHours(_timeOptions.NightRateEntryEndTime) &&
                                 CarParkHelper.IsWeekday(entryTime);
 
             //Exit date need to be less than next date of entry date 6am
-            bool isExitTimeValid = exitTime <= entryTime.Date.AddDays(1).Add(TimeSpan.FromHours(6));
+            bool isExitTimeValid = exitTime <= entryTime.Date.AddDays(1).Add(TimeSpan.FromHours(_timeOptions.NightRateExitNextDateLastTime));
 
             return isEntryTimeValid && isExitTimeValid;
         }
@@ -114,20 +119,20 @@ namespace Emprevo.CarPark.Service
             var duration = exitTime - entryTime;
             if (duration.TotalHours <= 1)
             {
-                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = 5.00, RateType = ParkingRateType.HourlyRate };
+                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = _priceOptions.StandardRateOneHour, RateType = ParkingRateType.HourlyRate };
             }
             else if (duration.TotalHours <= 2)
             {
-                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = 10.00, RateType = ParkingRateType.HourlyRate };
+                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = _priceOptions.StandardRateTwoHour, RateType = ParkingRateType.HourlyRate };
             }
             else if (duration.TotalHours <= 3)
             {
-                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = 15.00, RateType = ParkingRateType.HourlyRate };
+                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = _priceOptions.StandardRateThreeHour, RateType = ParkingRateType.HourlyRate };
             }
             else
             {
                 int days = (int)Math.Ceiling(duration.TotalDays);
-                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = 20.00 * days, RateType = ParkingRateType.HourlyRate };
+                return new ParkingRate { Name = ParkingRateName.StandardRate, Price = _priceOptions.StandardRateFlatRate * days, RateType = ParkingRateType.HourlyRate };
             }
         }
         #endregion
